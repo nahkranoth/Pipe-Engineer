@@ -61,7 +61,7 @@ namespace nl.elleniaw.pipeBuilder{
 		}
 
 		public void UpdateLayout(){
-			pipe_layout_to_mesh.UpdateLayout (pipe_layout, hasPhong);
+//			pipe_layout_to_mesh.UpdateLayout (pipe_layout, hasPhong);
 			if (drawMesh) {
 				pipe_mesh = new PipeMesh (pipe_layout_to_mesh.vertices, pipe_layout_to_mesh.triangles);
 			}

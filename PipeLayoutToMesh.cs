@@ -45,22 +45,7 @@ namespace nl.elleniaw.pipeBuilder{
 
 		public void UpdateLayout(PipeLayout _pipe_layout, bool _doubled_vertices){
 			
-			if (doubledVertices) {
-				vertices = new List<Vector3> ();
-			} else {
-				vertices = new List<Vector3> ();
-			}
-			triangles = new List<int>();
-
-			for (int i = 0; i < pipe_layout.amount_of_rings; i++) {
-				if (doubledVertices) {
-					buildRingWithPhong (i);
-				} else {
-					buildRing (i);
-				}
-			}
-			selected_vertices = Enumerable.Repeat(Vector3.zero, vertices.Count).ToList();
-			buildTriangles ();
+			//TODO: Add to the vertices instead of totally rebuilding them
 
 		}
 
@@ -159,10 +144,6 @@ namespace nl.elleniaw.pipeBuilder{
 			triangles.Insert (triangle + 3, baseVert + pipe_layout.amount_of_ring_vertices);
 			triangles.Insert (triangle + 4,  baseVert2 + pipe_layout.amount_of_ring_vertices + 1);
 
-//			triangles [triangle - 1] = baseVert;
-//			triangles [triangle] = triangles [triangle + 3] =  baseVert + pipe_layout.amount_of_ring_vertices;
-//			triangles [triangle + 1] = triangles [triangle + 2] =baseVert + 1;
-//			triangles [triangle + 4] = baseVert + pipe_layout.amount_of_ring_vertices + 1;
 		}
 
 		void buildQuadNoPhong(int vertice, int ring){
@@ -182,15 +163,11 @@ namespace nl.elleniaw.pipeBuilder{
 			triangles.Insert (triangle + 2, baseVert2 + 1);
 			triangles.Insert (triangle + 3, opposideVert);
 
-//			triangles [triangle + 1] = triangles [triangle + 2] = baseVert + 1;
-
 			if(opposideVert + 1 == (faces * ring) + faces){
 				opposideVert = (faces * ring) - 1;
 			}
 
 			triangles.Insert (triangle + 4, opposideVert + 1);
-
-//			triangles [triangle + 4] = opposideVert + 1;
 
 		}
 
