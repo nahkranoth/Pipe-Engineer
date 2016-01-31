@@ -9,6 +9,7 @@ namespace nl.elleniaw.pipeBuilder{
 		private float handleDistance = 1.0f; // remove and get from other place
 		private PipeLayout pipe_layout;
 
+		public Vector3[] selected_vertices;
 		public Vector3[] vertices;
 		public int[] triangles;
 		//List with vertices and positions of the vertices
@@ -32,8 +33,30 @@ namespace nl.elleniaw.pipeBuilder{
 					buildRing (i);
 				}
 			}
-
+			selected_vertices = new Vector3[vertices.Length];
 			buildTriangles ();
+		}
+
+		public void OnMoveHandle(Vector3 delta_pos){
+			for (int i = 0; i < selected_vertices.Length; i++) {
+				if(selected_vertices[i] != Vector3.zero){
+					vertices [i] -= delta_pos;
+					selected_vertices [i] = vertices [i];
+				}
+			}
+		}
+
+		public void OnMouseSelection(Rect selection){
+			selected_vertices = new Vector3[vertices.Length];
+			for (int i = 0; i < vertices.Length; i++) {
+				if(Camera.current != null){
+					Vector2 screen_position = Camera.current.WorldToScreenPoint (vertices [i]);
+					if(selection.Contains(new Vector2(screen_position.x, Screen.height - screen_position.y), true)){
+						Debug.Log ("Vertices Contained");
+						selected_vertices [i] = vertices [i];
+					}
+				}
+			}
 		}
 
 		private void buildRingWithPhong(int ring_index){

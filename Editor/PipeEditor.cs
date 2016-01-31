@@ -17,28 +17,68 @@ namespace nl.elleniaw.pipeBuilder{
 		string diameter = "0.1";
 		string repeater = "0";
 
+		Vector2 mouse_start_position;
+		Vector2 mouse_end_position;
+		bool dragBoxVisible = false;
+
 		void OnSceneGUI() {
 			pipeBuildTarget = (Pipe)target;
 			Undo.RecordObject (pipeBuildTarget, "Moved pipe build target");//Ctrl+Z
 			SetGUIMenu ();
-//			SetHandle ();
+			SetHandle ();
+			CheckMouse ();
+			DrawSelectionBox ();
+		}
+			
+
+		void CheckMouse(){
+			int controlID = GUIUtility.GetControlID (FocusType.Passive);
+			switch (Event.current.GetTypeForControl (controlID)) {
+			case EventType.MouseDown:
+				mouse_start_position.x = Event.current.mousePosition.x;
+				mouse_start_position.y = Event.current.mousePosition.y;
+				GUIUtility.hotControl = controlID;
+				Event.current.Use ();
+				break;
+			case EventType.MouseDrag:
+				dragBoxVisible = true;
+				mouse_end_position.x = Event.current.mousePosition.x;
+				mouse_end_position.y = Event.current.mousePosition.y;
+				Event.current.Use ();
+				break;
+			case EventType.MouseUp:
+				dragBoxVisible = false;
+				mouse_end_position.x = Event.current.mousePosition.x;
+				mouse_end_position.y = Event.current.mousePosition.y;
+				pipeBuildTarget.OnMouseSelection (new Rect(mouse_start_position, mouse_end_position - mouse_start_position));
+				GUIUtility.hotControl = 0;
+				Event.current.Use ();
+				break;
+			}
 		}
 
+		void DrawSelectionBox(){
+			if (dragBoxVisible) {
+				Handles.BeginGUI ();
+				GUI.BeginGroup (new Rect (0, 0, 1000, 1000));
+				GUI.color = getColor ("#ABA68855");
+				GUI.Box (new Rect (mouse_start_position, mouse_end_position - mouse_start_position), "");
+				GUI.EndGroup ();
+				Handles.EndGUI ();
+			}
+		}
 
 		void SetHandle() {
 			pipeBuildTarget = (Pipe)target;
-			int controlID = GUIUtility.GetControlID (FocusType.Passive);
-			Vector3 screenPosition = Handles.matrix.MultiplyPoint(pipeBuildTarget.pipe_manager.pipe_layout.handle_position);
-			Handles.color = Color.white;
+			if(pipeBuildTarget != null){
 
-			pipeBuildTarget.pipe_manager.pipe_layout.handle_position = Handles.PositionHandle (pipeBuildTarget.pipe_manager.pipe_layout.handle_position, Quaternion.Euler(pipeBuildTarget.pipe_manager.pipe_layout.handle_rotation));
-
-			if (GUI.changed)
-			{
-//				Check if Extrude
-//				EditorUtility.SetDirty (target);
-//				pipeBuildTarget.pipe_manager.pipe_layout.UpdateLastRing ();
-
+				int controlID = GUIUtility.GetControlID (FocusType.Passive);
+				Vector3 screenPosition = Handles.matrix.MultiplyPoint(pipeBuildTarget.handle_position);
+				Handles.color = Color.white;
+				Vector3 handle_delta = Handles.PositionHandle (pipeBuildTarget.handle_position, Quaternion.Euler(pipeBuildTarget.handle_rotation));
+				if (GUI.changed) {
+					pipeBuildTarget.OnMoveHandle (handle_delta);
+				}
 			}
 		}
 
@@ -49,8 +89,8 @@ namespace nl.elleniaw.pipeBuilder{
 
 		void UpdateHandlePosition(){
 			pipeBuildTarget = (Pipe)target;
-			pipeBuildTarget.pipe_manager.pipe_layout.handle_position = pipeBuildTarget.pipe_manager.pipe_layout.heading_pos;
-			pipeBuildTarget.pipe_manager.pipe_layout.handle_rotation = pipeBuildTarget.pipe_manager.pipe_layout.heading_deg;
+			pipeBuildTarget.handle_position = pipeBuildTarget.pipe_manager.pipe_layout.heading_pos;
+			pipeBuildTarget.handle_rotation = pipeBuildTarget.pipe_manager.pipe_layout.heading_deg;
 		}
 
 		void OnDisable(){

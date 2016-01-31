@@ -17,27 +17,18 @@ namespace nl.elleniaw.pipeBuilder{
 		public Vector3 heading_pos = Vector3.zero;
 		public Vector3 rotate_root_position = Vector3.zero;
 
-		public Vector3 handle_position = Vector3.zero;
-		public Vector3 handle_rotation = Vector3.zero;
-
 		private PipeManager parent;
 		//List with positions and rotations of each rings
 
 		public PipeLayout (PipeManager _parent)
 		{
 			parent = _parent;
-
-			AddThickness ();
+			AddRing (new Vector3 (0, 0, 0f), new Vector3 (0, 0, 0), 0.2f);
+			AddRing (new Vector3 (0, 0, 0.2f), new Vector3 (0, 0, 0), 0.2f);
 			AddRing (new Vector3 (0, 0, 0.2f), new Vector3 (0, 0, 0), 0.1f);
 			AddRing (new Vector3 (0, 0, 1.0f), new Vector3 (0, 0, 0), 0.1f);
 
 		}
-
-		private void AddThickness(){
-			AddRing (new Vector3 (0, 0, 0f), new Vector3 (0, 0, 0), 0.2f);
-			AddRing (new Vector3 (0, 0, 0.2f), new Vector3 (0, 0, 0), 0.2f);
-		}
-
 
 		public void ExtrudeRing(float offset, Vector3 rotation, float diameter){
 
@@ -53,7 +44,6 @@ namespace nl.elleniaw.pipeBuilder{
 
 		public void UpdateLastRing(){
 			RemoveRing ();
-			AddRing(handle_position, handle_rotation, diameter);
 			parent.ApplyLayoutChanges ();
 		}
 

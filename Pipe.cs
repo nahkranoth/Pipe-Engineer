@@ -31,6 +31,9 @@ namespace nl.elleniaw.pipeBuilder{
 		public bool drawGizmos = true;
 		public bool hasPhong = true;
 
+		public Vector3 handle_position = Vector3.zero;
+		public Vector3 handle_rotation = Vector3.zero;
+
 		public void OnValidate(){
 			if (pipe_manager != null) {
 				pipe_manager.hasPhong = hasPhong;
@@ -53,6 +56,16 @@ namespace nl.elleniaw.pipeBuilder{
 			setMesh (pipe_manager.pipe_mesh.mesh);
 		}
 
+		public void OnMoveHandle(Vector3 _handle_position){
+			Vector3 delta_handle_position = handle_position - _handle_position;
+			handle_position = _handle_position;
+			pipe_manager.OnMoveHandle (delta_handle_position);
+		}
+
+		public void OnMouseSelection(Rect selection){
+			pipe_manager.OnMouseSelection (selection);
+		}
+
 		private void setMesh(Mesh mesh){
 			filter = gameObject.GetComponent<MeshFilter>();
 			if(filter == null){
@@ -64,7 +77,7 @@ namespace nl.elleniaw.pipeBuilder{
 		}
 
 		void Update(){
-			if (transform.hasChanged) {
+			if (transform.hasChanged && pipe_manager != null) {
 				pipe_manager.root_position = transform.position;
 				pipe_manager.root_rotation = transform.rotation;
 				transform.hasChanged = false;
