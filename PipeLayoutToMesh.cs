@@ -168,29 +168,29 @@ namespace nl.elleniaw.pipeBuilder{
 		void buildQuadNoPhong(int vertice, int ring){
 			var triangle = (vertice * 6) - 5;
 			var baseVert = vertice + (vertice - 1);
-
 			var faces = (pipe_layout.amount_of_ring_vertices * 2);
+			int baseVert2 = baseVert;
+			if(baseVert + 1 == (faces * ring)){
+				baseVert2 = (faces * ring) - (faces + 1);
+			}
 
 			var opposideVert = baseVert + (pipe_layout.amount_of_ring_vertices * 2);
 
 			triangles.Insert (triangle - 1, baseVert);
 			triangles.Insert (triangle, opposideVert);
+			triangles.Insert (triangle + 1, baseVert2 + 1);
+			triangles.Insert (triangle + 2, baseVert2 + 1);
 			triangles.Insert (triangle + 3, opposideVert);
 
-//			triangles [triangle - 1] = baseVert;
-//			triangles [triangle] = triangles[triangle + 3] = opposideVert;
-
-			if(baseVert + 1 == (faces * ring)){
-				baseVert = (faces * ring) - (faces + 1);
-			}
-
-			triangles [triangle + 1] = triangles [triangle + 2] = baseVert + 1;
+//			triangles [triangle + 1] = triangles [triangle + 2] = baseVert + 1;
 
 			if(opposideVert + 1 == (faces * ring) + faces){
 				opposideVert = (faces * ring) - 1;
 			}
 
-			triangles [triangle + 4] = opposideVert + 1;
+			triangles.Insert (triangle + 4, opposideVert + 1);
+
+//			triangles [triangle + 4] = opposideVert + 1;
 
 		}
 
