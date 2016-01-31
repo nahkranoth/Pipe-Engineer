@@ -15,7 +15,7 @@ namespace nl.elleniaw.pipeBuilder{
 		string rotationZ = "0";
 		string offset = "1";
 		string diameter = "0.1";
-		string repeater = "0";
+		string repeater = "1";
 
 		Vector2 mouse_start_position;
 		Vector2 mouse_end_position;
@@ -24,10 +24,12 @@ namespace nl.elleniaw.pipeBuilder{
 		void OnSceneGUI() {
 			pipeBuildTarget = (Pipe)target;
 			Undo.RecordObject (pipeBuildTarget, "Moved pipe build target");//Ctrl+Z
-			SetGUIMenu ();
-			SetHandle ();
-			CheckMouse ();
-			DrawSelectionBox ();
+			if(pipeBuildTarget != null){
+				SetGUIMenu ();
+				SetHandle ();
+				CheckMouse ();
+				DrawSelectionBox ();
+			}
 		}
 			
 
@@ -89,8 +91,10 @@ namespace nl.elleniaw.pipeBuilder{
 
 		void UpdateHandlePosition(){
 			pipeBuildTarget = (Pipe)target;
-			pipeBuildTarget.handle_position = pipeBuildTarget.pipe_manager.pipe_layout.heading_pos;
-			pipeBuildTarget.handle_rotation = pipeBuildTarget.pipe_manager.pipe_layout.heading_deg;
+			if (pipeBuildTarget != null) {
+				pipeBuildTarget.handle_position = pipeBuildTarget.pipe_manager.pipe_layout.heading_pos;
+				pipeBuildTarget.handle_rotation = pipeBuildTarget.pipe_manager.pipe_layout.heading_deg;
+			}
 		}
 
 		void OnDisable(){
