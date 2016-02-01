@@ -43,7 +43,7 @@ namespace nl.elleniaw.pipeBuilder{
 
 		public void UpdateLastRing(){
 			RemoveRing ();
-			parent.ApplyLayoutChanges ();
+			parent.ResetLayout ();
 		}
 
 		public void RemoveRing(){
@@ -57,12 +57,24 @@ namespace nl.elleniaw.pipeBuilder{
 				heading_pos = ring_origins [ring_origins.Count - 1];
 				amount_of_rings = ring_origins.Count;
 
-				parent.ApplyLayoutChanges ();
+				parent.ResetLayout ();
 			}
 
 		}
 
-		private void AddRing(Vector3 position, Vector3 euler_angle, float diameter){
+		public void AddRing(float offset, Vector3 rotation, float diameter){
+			
+			Vector3 addition = new Vector3 (0,0,offset);
+			heading_pos += Quaternion.Euler (heading_deg.x, heading_deg.y, heading_deg.z) * addition;
+			heading_deg += rotation;
+
+			ring_origins.Add (heading_pos);
+			ring_rotation.Add (Quaternion.Euler(rotation));
+			ring_diameters.Add (diameter);
+			amount_of_rings = ring_origins.Count;
+		}
+
+		public void AddRing(Vector3 position, Vector3 euler_angle, float diameter){
 			ring_origins.Add (position);
 			ring_rotation.Add (Quaternion.Euler(euler_angle));
 			ring_diameters.Add (diameter);
@@ -76,7 +88,7 @@ namespace nl.elleniaw.pipeBuilder{
 			ring_rotation.Clear ();
 			ring_diameters.Clear ();
 			amount_of_rings = 0;
-			parent.ApplyLayoutChanges ();
+			parent.ResetLayout ();
 		}
 
 	}

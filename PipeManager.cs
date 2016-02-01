@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using System.Linq;
 
 namespace nl.elleniaw.pipeBuilder{
 	public class PipeManager {
@@ -8,7 +9,7 @@ namespace nl.elleniaw.pipeBuilder{
 		public PipeLayout pipe_layout;
 		public PipeMesh pipe_mesh;
 		public PipeGizmos pipe_gizmos;
-		private PipeLayoutToMesh pipe_layout_to_mesh;
+		public PipeLayoutToMesh pipe_layout_to_mesh;
 
 		public int amount_of_ring_vertices = 9;
 
@@ -22,7 +23,7 @@ namespace nl.elleniaw.pipeBuilder{
 		public Quaternion root_rotation{
 			set { 
 				rotation = value;
-				ApplyLayoutChanges ();
+				ResetLayout ();
 			}
 			get {
 				return rotation;
@@ -33,11 +34,17 @@ namespace nl.elleniaw.pipeBuilder{
 		public Vector3 root_position {
 			set { 
 				position = value;
-				ApplyLayoutChanges ();
+				ResetLayout ();
 			}
 			get {
 				return position;
 			}
+		}
+
+		public void ExtrudeRing(float offset, Vector3 rotation, float diameter){
+			pipe_layout.AddRing (offset, rotation, diameter);
+			pipe_layout_to_mesh.ExtrudeRing (pipe_layout);
+			UpdateLayout ();
 		}
 
 		public void OnMouseSelection(Rect selection){
@@ -57,33 +64,39 @@ namespace nl.elleniaw.pipeBuilder{
 			pipe_layout = new PipeLayout (this);
 			root_position = new Vector3 (0,0,0);
 			root_rotation = new Quaternion ();
-			ApplyLayoutChanges();
+			ResetLayout();
 		}
-
+			
+		//Update Mesh
 		public void UpdateLayout(){
-//			pipe_layout_to_mesh.UpdateLayout (pipe_layout, hasPhong);
-			if (drawMesh) {
-				pipe_mesh = new PipeMesh (pipe_layout_to_mesh.vertices, pipe_layout_to_mesh.triangles);
-			}
+			CreateMesh ();
 			if(drawGizmos){
 				pipe_gizmos.gizmo_vertices = pipe_layout_to_mesh.vertices;
-				pipe_gizmos.selected_gizmos = pipe_layout_to_mesh.selected_vertices;
+				pipe_gizmos.selected_gizmos = Enumerable.Repeat(Vector3.zero, pipe_gizmos.gizmo_vertices.Count).ToList();
+				for (int i = 0; i <  pipe_layout_to_mesh.selected_vertices.Count; i++) {
+					pipe_gizmos.selected_gizmos.Insert (i, pipe_layout_to_mesh.selected_vertices [i]);
+				}
 				pipe_gizmos.pipe_mesh = pipe_mesh.mesh;
 			}
 			meshCallback (pipe_mesh.mesh);
 		}
 
-		public void ApplyLayoutChanges(){
+		//totally redraw Mesh and Gizmo Layout
+		public void ResetLayout(){
 			pipe_layout_to_mesh = new PipeLayoutToMesh (pipe_layout, hasPhong);
-			if (drawMesh) {
-				pipe_mesh = new PipeMesh (pipe_layout_to_mesh.vertices, pipe_layout_to_mesh.triangles);
-			}
+			CreateMesh ();
 			if(drawGizmos){
 				pipe_gizmos = new PipeGizmos (pipe_layout_to_mesh.vertices, pipe_mesh.mesh, root_position, root_rotation);
 			}
 			meshCallback (pipe_mesh.mesh);
 		}
 			
+		private void CreateMesh(){
+			if (drawMesh) {
+				pipe_mesh = new PipeMesh (pipe_layout_to_mesh.vertices, pipe_layout_to_mesh.triangles);
+			}
+		}
+
 		public void UpdateGizmos(){
 			if (drawGizmos) {
 				pipe_gizmos.Update ();

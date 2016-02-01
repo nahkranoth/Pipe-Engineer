@@ -43,10 +43,11 @@ namespace nl.elleniaw.pipeBuilder{
 			buildTriangles ();
 		}
 
-		public void UpdateLayout(PipeLayout _pipe_layout, bool _doubled_vertices){
-			
-			//TODO: Add to the vertices instead of totally rebuilding them
-
+		public void ExtrudeRing(PipeLayout pipe_layout){
+			if (doubledVertices) {
+				buildRingWithPhong (pipe_layout.amount_of_rings - 1);
+			}
+			buildTriangles ();
 		}
 
 		public void OnMoveHandle(Vector3 delta_pos){
@@ -107,7 +108,6 @@ namespace nl.elleniaw.pipeBuilder{
 				setVertice(i + slice_root, vertice_position);
 				setVertice(i + slice_root + 1, vertice_position);// we double the vertices
 			}
-
 		}
 
 		private void setVertice(int index, Vector3 position){

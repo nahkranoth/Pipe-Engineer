@@ -29,7 +29,7 @@ namespace nl.elleniaw.pipeBuilder{
 				}
 			}
 		}
-
+			
 		public void OnMouseSelection(Rect selection){
 			selected_gizmos = Enumerable.Repeat(Vector3.zero, gizmo_vertices.Count).ToList();
 			for (int i = 0; i < gizmo_vertices.Count; i++) {
@@ -45,10 +45,9 @@ namespace nl.elleniaw.pipeBuilder{
 		public void Update() {
 			for (int i = 0; i < gizmo_vertices.Count; i++) {
 				var v = gizmo_rotation * gizmo_vertices [i];
-
-				if(selected_gizmos != null && selected_gizmos[i] == gizmo_vertices[i]){
+				if (selected_gizmos != null && selected_gizmos [i] == gizmo_vertices [i]) {
 					Gizmos.color = Color.yellow;
-				}else{
+				} else {
 					Gizmos.color = Color.black;
 				}
 				Gizmos.DrawSphere (new Vector3 (v.x + gizmo_position.x, v.y + gizmo_position.y, v.z + gizmo_position.z), 0.1f * size);

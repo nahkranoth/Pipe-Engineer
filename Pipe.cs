@@ -39,7 +39,7 @@ namespace nl.elleniaw.pipeBuilder{
 				pipe_manager.hasPhong = hasPhong;
 				pipe_manager.drawGizmos = drawGizmos;
 				pipe_manager.drawMesh = drawMesh;
-				pipe_manager.ApplyLayoutChanges ();
+				pipe_manager.ResetLayout ();
 			}
 
 			if (!drawMesh) {
@@ -91,7 +91,7 @@ namespace nl.elleniaw.pipeBuilder{
 		}
 
 		public void OnExtrudeRing(){
-			pipe_manager.pipe_layout.ExtrudeRing (offset, rotation, diameter);
+			pipe_manager.ExtrudeRing (offset, rotation, diameter);
 		}
 
 		public void OnRemoveRing(){
