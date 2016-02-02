@@ -7,6 +7,7 @@ using UnityEngine;
 	-> Bolts (Add Objects?)
 	-> PBS materials
 */
+using System.Collections.Generic;
 
 namespace nl.elleniaw.pipeBuilder{
 	
@@ -34,6 +35,9 @@ namespace nl.elleniaw.pipeBuilder{
 		public Vector3 handle_position = Vector3.zero;
 		public Vector3 handle_rotation = Vector3.zero;
 
+		public delegate void HandleSelected (Vector3 vertice_position);
+		protected HandleSelected handleSelectCallback;
+
 		public void OnValidate(){
 			if (pipe_manager != null) {
 				pipe_manager.hasPhong = hasPhong;
@@ -59,11 +63,17 @@ namespace nl.elleniaw.pipeBuilder{
 		public void OnMoveHandle(Vector3 _handle_position){
 			Vector3 delta_handle_position = handle_position - _handle_position;
 			handle_position = _handle_position;
-			pipe_manager.OnMoveHandle (delta_handle_position);
+			pipe_manager.OnMoveHandle (delta_handle_position/2, handleSelectCallback);
 		}
 
 		public void OnMouseSelection(Rect selection){
-			pipe_manager.OnMouseSelection (selection);
+			handleSelectCallback = setHandle;
+			pipe_manager.OnMouseSelection (selection, handleSelectCallback);
+		}
+
+		public void setHandle(Vector3 position){
+			Debug.Log("Handle Callback: "+position);
+			handle_position = position;
 		}
 
 		private void setMesh(Mesh mesh){

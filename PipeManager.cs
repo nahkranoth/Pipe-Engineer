@@ -47,15 +47,15 @@ namespace nl.elleniaw.pipeBuilder{
 			UpdateLayout ();
 		}
 
-		public void OnMouseSelection(Rect selection){
+		public void OnMouseSelection(Rect selection, Pipe.HandleSelected handleCallback){
 			if(pipe_gizmos != null && drawGizmos){
 				pipe_gizmos.OnMouseSelection (selection);
-				pipe_layout_to_mesh.OnMouseSelection (selection);
+				pipe_layout_to_mesh.OnMouseSelection (selection, handleCallback);
 			}
 		}
-		public void OnMoveHandle(Vector3 delta_pos){
+		public void OnMoveHandle(Vector3 delta_pos, Pipe.HandleSelected handleCallback){
 			pipe_gizmos.OnMoveHandle (delta_pos);
-			pipe_layout_to_mesh.OnMoveHandle (delta_pos);
+			pipe_layout_to_mesh.OnMoveHandle (delta_pos, handleCallback);
 			UpdateLayout ();
 		}
 

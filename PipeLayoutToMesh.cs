@@ -50,25 +50,47 @@ namespace nl.elleniaw.pipeBuilder{
 			buildTriangles ();
 		}
 
-		public void OnMoveHandle(Vector3 delta_pos){
+		public void OnMoveHandle(Vector3 delta_pos, Pipe.HandleSelected handleCallback){
 			for (int i = 0; i < selected_vertices.Count; i++) {
 				if(selected_vertices[i] != Vector3.zero){
 					vertices [i] -= delta_pos;
 					selected_vertices [i] = vertices [i];
 				}
 			}
+
+//			setHandlePosition (delta_pos, handleCallback);
 		}
 
-		public void OnMouseSelection(Rect selection){
+		public void OnMouseSelection(Rect selection, Pipe.HandleSelected handleCallback){
 			selected_vertices = Enumerable.Repeat(Vector3.zero, vertices.Count).ToList();
+			List<Vector3> only_selected = new List<Vector3> ();
 			for (int i = 0; i < vertices.Count; i++) {
 				if(Camera.current != null){
 					Vector2 screen_position = Camera.current.WorldToScreenPoint (vertices [i]);
 					if(selection.Contains(new Vector2(screen_position.x, Screen.height - screen_position.y), true)){
 						selected_vertices [i] = vertices [i];
+						only_selected.Add (vertices [i]);
 					}
 				}
 			}
+			setHandleToAverage (only_selected, handleCallback);
+		}
+
+		private void setHandleToAverage(List<Vector3> vector_list, Pipe.HandleSelected handleCallback){
+			if(vector_list.Count > 0 && handleCallback != null){
+				//not Average but the min and max's halfway point
+				Vector3 average_vector = new Vector3 (
+					vector_list.Average(x=>x.x),
+					vector_list.Average(x=>x.y),
+					vector_list.Average(x=>x.z)
+				);
+
+				setHandlePosition (average_vector, handleCallback);
+			}
+		}
+
+		private void setHandlePosition(Vector3 position, Pipe.HandleSelected handleCallback){
+			handleCallback (position);
 		}
 
 		private void buildRingWithPhong(int ring_index){

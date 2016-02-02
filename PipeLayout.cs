@@ -15,7 +15,6 @@ namespace nl.elleniaw.pipeBuilder{
 
 		public Vector3 heading_deg = Vector3.zero;
 		public Vector3 heading_pos = Vector3.zero;
-		public Vector3 rotate_root_position = Vector3.zero;
 
 		private PipeManager parent;
 		//List with positions and rotations of each rings
@@ -65,11 +64,12 @@ namespace nl.elleniaw.pipeBuilder{
 		public void AddRing(float offset, Vector3 rotation, float diameter){
 			
 			Vector3 addition = new Vector3 (0,0,offset);
-			heading_pos += Quaternion.Euler (heading_deg.x, heading_deg.y, heading_deg.z) * addition;
+
 			heading_deg += rotation;
+			heading_pos += Quaternion.Euler (heading_deg.x, heading_deg.y, heading_deg.z) * addition;
 
 			ring_origins.Add (heading_pos);
-			ring_rotation.Add (Quaternion.Euler(rotation));
+			ring_rotation.Add (Quaternion.Euler(heading_deg));
 			ring_diameters.Add (diameter);
 			amount_of_rings = ring_origins.Count;
 		}
