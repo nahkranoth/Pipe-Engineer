@@ -3,7 +3,10 @@ using UnityEngine;
 
 
 /*TODO:
-	-> Arrow Pull extrude
+	-> Extrude from new position instead of previous extruded point
+	-> Hide handle when no selection
+	-> Stop multiple gizmoMeshes created
+
 	-> Bolts (Add Objects?)
 	-> PBS materials
 */
