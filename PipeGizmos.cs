@@ -13,6 +13,8 @@ namespace nl.elleniaw.pipeBuilder{
 		public Mesh pipe_mesh;
 		public float size = 0.1f;
 
+		public bool vertices_selected = false;
+
 		public PipeGizmos(List<Vector3> _vertices, Mesh _pipe_mesh, Vector3 _position, Quaternion _rotation){
 			gizmo_vertices = _vertices;
 			selected_gizmos = Enumerable.Repeat(Vector3.zero, gizmo_vertices.Count).ToList();
@@ -32,11 +34,13 @@ namespace nl.elleniaw.pipeBuilder{
 			
 		public void OnMouseSelection(Rect selection){
 			selected_gizmos = Enumerable.Repeat(Vector3.zero, gizmo_vertices.Count).ToList();
+			vertices_selected = false;
 			for (int i = 0; i < gizmo_vertices.Count; i++) {
 				if(Camera.current != null){
 					Vector2 screen_position = Camera.current.WorldToScreenPoint (gizmo_vertices [i]);
 					if(selection.Contains(new Vector2(screen_position.x, Screen.height - screen_position.y), true)){
 						selected_gizmos [i] = gizmo_vertices [i];
+						vertices_selected = true;
 					}
 				}
 			}
@@ -54,7 +58,6 @@ namespace nl.elleniaw.pipeBuilder{
 			}
 			Gizmos.color = new Color (1.0f, 1.0f, 0.0f, 0.3f);
 			Gizmos.DrawMesh (pipe_mesh, gizmo_position, gizmo_rotation, Vector3.one);
-
 		}
 	}
 }

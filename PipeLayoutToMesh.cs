@@ -8,7 +8,6 @@ namespace nl.elleniaw.pipeBuilder{
 	{
 
 		private bool doubledVertices;
-		private float handleDistance = 1.0f; // remove and get from other place
 		private PipeLayout pipe_layout;
 
 		public List<Vector3> selected_vertices;
@@ -57,8 +56,7 @@ namespace nl.elleniaw.pipeBuilder{
 					selected_vertices [i] = vertices [i];
 				}
 			}
-
-//			setHandlePosition (delta_pos, handleCallback);
+			pipe_layout.heading_pos -= (delta_pos*2);
 		}
 
 		public void OnMouseSelection(Rect selection, Pipe.HandleSelected handleCallback){

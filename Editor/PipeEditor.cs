@@ -31,32 +31,34 @@ namespace nl.elleniaw.pipeBuilder{
 				DrawSelectionBox ();
 			}
 		}
-			
 
 		void CheckMouse(){
 			int controlID = GUIUtility.GetControlID (FocusType.Passive);
-			switch (Event.current.GetTypeForControl (controlID)) {
-			case EventType.MouseDown:
-				mouse_start_position.x = Event.current.mousePosition.x;
-				mouse_start_position.y = Event.current.mousePosition.y;
-				GUIUtility.hotControl = controlID;
-				Event.current.Use ();
-				break;
-			case EventType.MouseDrag:
-				dragBoxVisible = true;
-				mouse_end_position.x = Event.current.mousePosition.x;
-				mouse_end_position.y = Event.current.mousePosition.y;
-				Event.current.Use ();
-				break;
-			case EventType.MouseUp:
-				dragBoxVisible = false;
-				mouse_end_position.x = Event.current.mousePosition.x;
-				mouse_end_position.y = Event.current.mousePosition.y;
-				pipeBuildTarget.OnMouseSelection (new Rect(mouse_start_position, mouse_end_position - mouse_start_position));
-				GUIUtility.hotControl = 0;
-				Event.current.Use ();
-				break;
+			if (Event.current.shift) {
+				switch (Event.current.GetTypeForControl (controlID)) {
+				case EventType.MouseDown:
+					mouse_start_position.x = Event.current.mousePosition.x;
+					mouse_start_position.y = Event.current.mousePosition.y;
+					GUIUtility.hotControl = controlID;
+					Event.current.Use ();
+					break;
+				case EventType.MouseDrag:
+					dragBoxVisible = true;
+					mouse_end_position.x = Event.current.mousePosition.x;
+					mouse_end_position.y = Event.current.mousePosition.y;
+					Event.current.Use ();
+					break;
+				case EventType.MouseUp:
+					dragBoxVisible = false;
+					mouse_end_position.x = Event.current.mousePosition.x;
+					mouse_end_position.y = Event.current.mousePosition.y;
+					pipeBuildTarget.OnMouseSelection (new Rect(mouse_start_position, mouse_end_position - mouse_start_position));
+					GUIUtility.hotControl = 0;
+					Event.current.Use ();
+					break;
+				}
 			}
+
 		}
 
 		void DrawSelectionBox(){
@@ -72,8 +74,7 @@ namespace nl.elleniaw.pipeBuilder{
 
 		void SetHandle() {
 			pipeBuildTarget = (Pipe)target;
-			if(pipeBuildTarget != null){
-
+			if(pipeBuildTarget != null && pipeBuildTarget.handle_visible){
 				int controlID = GUIUtility.GetControlID (FocusType.Passive);
 				Vector3 screenPosition = Handles.matrix.MultiplyPoint(pipeBuildTarget.handle_position);
 				Handles.color = Color.white;

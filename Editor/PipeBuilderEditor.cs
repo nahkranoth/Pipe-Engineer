@@ -12,12 +12,12 @@ public class PipeBuilderEditor : Editor {
 
 		Handles.color = Color.white;
 		//pipeBuildTarget.handlePos = Handles.PositionHandle (pipeBuildTarget.targetPos , Quaternion.identity);
-		Handles.ArrowCap(controlID,
-			pipeBuildTarget.targetPos,
-			Quaternion.Euler(pipeBuildTarget.transform.localEulerAngles),
-			pipeBuildTarget.diameter
-		);
 
+			Handles.ArrowCap (controlID,
+				pipeBuildTarget.targetPos,
+				Quaternion.Euler (pipeBuildTarget.transform.localEulerAngles),
+				pipeBuildTarget.diameter
+			);
 		//HandleUtility.GetHandleSize (new Vector3(pipeBuildTarget.diameter, pipeBuildTarget.diameter, pipeBuildTarget.diameter));// (for dynamic size)
 
 		switch (Event.current.GetTypeForControl (controlID)) {

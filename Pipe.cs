@@ -3,11 +3,12 @@ using UnityEngine;
 
 
 /*TODO:
-	-> Extrude from new position instead of previous extruded point
-	-> Hide handle when no selection
 	-> Stop multiple gizmoMeshes created
+	-> Remove last extrusion
 
+	-> Mesh texture bug (UV's?)
 	-> Bolts (Add Objects?)
+	-> Handle instead of Shift to select, check closes handles?
 	-> PBS materials
 */
 using System.Collections.Generic;
@@ -30,13 +31,18 @@ namespace nl.elleniaw.pipeBuilder{
 		public float diameter = 1.0f;
 		[HideInInspector]
 		public int repeater = 1;
+		[HideInInspector]
+		public bool handle_visible = false;
+		[HideInInspector]
+		public Vector3 handle_rotation = Vector3.zero;
+		[HideInInspector]
+		public Vector3 handle_position = Vector3.zero;
+
 
 		public bool drawMesh = true;//set
 		public bool drawGizmos = true;
 		public bool hasPhong = true;
-
-		public Vector3 handle_position = Vector3.zero;
-		public Vector3 handle_rotation = Vector3.zero;
+	
 
 		public delegate void HandleSelected (Vector3 vertice_position);
 		protected HandleSelected handleSelectCallback;
@@ -64,18 +70,22 @@ namespace nl.elleniaw.pipeBuilder{
 		}
 
 		public void OnMoveHandle(Vector3 _handle_position){
-			Vector3 delta_handle_position = handle_position - _handle_position;
-			handle_position = _handle_position;
-			pipe_manager.OnMoveHandle (delta_handle_position/2, handleSelectCallback);
+			if(pipe_manager != null){
+				Vector3 delta_handle_position = handle_position - _handle_position;
+				handle_position = _handle_position;
+				pipe_manager.OnMoveHandle (delta_handle_position/2, handleSelectCallback);
+			}
 		}
 
 		public void OnMouseSelection(Rect selection){
-			handleSelectCallback = setHandle;
-			pipe_manager.OnMouseSelection (selection, handleSelectCallback);
+			if (pipe_manager != null) {
+				handleSelectCallback = setHandle;
+				pipe_manager.OnMouseSelection (selection, handleSelectCallback);
+				handle_visible = pipe_manager.pipe_gizmos.vertices_selected;
+			}
 		}
 
 		public void setHandle(Vector3 position){
-			Debug.Log("Handle Callback: "+position);
 			handle_position = position;
 		}
 
