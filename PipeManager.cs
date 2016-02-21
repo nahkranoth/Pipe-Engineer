@@ -11,8 +11,6 @@ namespace nl.elleniaw.pipeBuilder{
 		public PipeGizmos pipe_gizmos;
 		public PipeLayoutToMesh pipe_layout_to_mesh;
 
-		public int amount_of_ring_vertices = 9;
-
 		public bool drawMesh = true;
 		public bool drawGizmos = false;
 		public bool hasPhong = true;
@@ -76,7 +74,6 @@ namespace nl.elleniaw.pipeBuilder{
 				for (int i = 0; i <  pipe_layout_to_mesh.selected_vertices.Count; i++) {
 					pipe_gizmos.selected_gizmos.Insert (i, pipe_layout_to_mesh.selected_vertices [i]);
 				}
-				pipe_gizmos.pipe_mesh = pipe_mesh.mesh;
 			}
 			meshCallback (pipe_mesh.mesh);
 		}

@@ -3,7 +3,6 @@ using UnityEngine;
 
 
 /*TODO:
-	-> Stop multiple gizmoMeshes created
 	-> Remove last extrusion
 
 	-> Mesh texture bug (UV's?)
@@ -31,6 +30,7 @@ namespace nl.elleniaw.pipeBuilder{
 		public float diameter = 1.0f;
 		[HideInInspector]
 		public int repeater = 1;
+		public int detail = 7;
 		[HideInInspector]
 		public bool handle_visible = false;
 		[HideInInspector]
@@ -38,16 +38,20 @@ namespace nl.elleniaw.pipeBuilder{
 		[HideInInspector]
 		public Vector3 handle_position = Vector3.zero;
 
-
-		public bool drawMesh = true;//set
+		private bool drawMesh = true;
 		public bool drawGizmos = true;
 		public bool hasPhong = true;
 	
-
+		MeshCallback meshCallback;
 		public delegate void HandleSelected (Vector3 vertice_position);
 		protected HandleSelected handleSelectCallback;
 
 		public void OnValidate(){
+			Validate ();
+		}
+
+		public void Validate ()
+		{
 			if (pipe_manager != null) {
 				pipe_manager.hasPhong = hasPhong;
 				pipe_manager.drawGizmos = drawGizmos;
@@ -60,13 +64,13 @@ namespace nl.elleniaw.pipeBuilder{
 			}
 		}
 
-		public Pipe ()
-		{
-			MeshCallback meshCallback = new MeshCallback (setMesh);
+		void OnEnable(){
+			meshCallback = new MeshCallback (setMesh);
 			pipe_manager = new PipeManager (meshCallback);
 			pipe_manager.root_position = transform.position;
 			pipe_manager.root_rotation = transform.rotation;
 			setMesh (pipe_manager.pipe_mesh.mesh);
+			Validate ();
 		}
 
 		public void OnMoveHandle(Vector3 _handle_position){

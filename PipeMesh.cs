@@ -14,8 +14,6 @@ namespace nl.elleniaw.pipeBuilder{
 		public Mesh mesh;
 
 		public PipeMesh(List<Vector3> _vertices, List<int> _triangles){
-
-			mesh = new Mesh ();
 			vertices = _vertices;
 			triangles = _triangles;
 			uvs = new List<Vector2> ();
@@ -27,6 +25,7 @@ namespace nl.elleniaw.pipeBuilder{
 		}
 
 		private void BuildMesh(){
+			mesh = new Mesh ();
 			mesh.vertices = vertices.ToArray ();
 			mesh.normals = normals.ToArray ();
 			mesh.uv = uvs.ToArray ();

@@ -10,7 +10,6 @@ namespace nl.elleniaw.pipeBuilder{
 		public List<Vector3> selected_gizmos;
 		private Vector3 gizmo_position;
 		private Quaternion gizmo_rotation;
-		public Mesh pipe_mesh;
 		public float size = 0.1f;
 
 		public bool vertices_selected = false;
@@ -20,7 +19,6 @@ namespace nl.elleniaw.pipeBuilder{
 			selected_gizmos = Enumerable.Repeat(Vector3.zero, gizmo_vertices.Count).ToList();
 			gizmo_position = _position;
 			gizmo_rotation = _rotation;
-			pipe_mesh = _pipe_mesh;
 		}
 
 		public void OnMoveHandle(Vector3 delta_pos){
@@ -56,8 +54,6 @@ namespace nl.elleniaw.pipeBuilder{
 				}
 				Gizmos.DrawSphere (new Vector3 (v.x + gizmo_position.x, v.y + gizmo_position.y, v.z + gizmo_position.z), 0.1f * size);
 			}
-			Gizmos.color = new Color (1.0f, 1.0f, 0.0f, 0.3f);
-			Gizmos.DrawMesh (pipe_mesh, gizmo_position, gizmo_rotation, Vector3.one);
 		}
 	}
 }
