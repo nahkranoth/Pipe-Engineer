@@ -40,6 +40,7 @@ namespace nl.elleniaw.pipeBuilder{
 		private bool drawMesh = true;
 		public bool drawGizmos = true;
 		public bool hasPhong = true;
+		public Texture2D GUI_image;
 	
 		MeshCallback meshCallback;
 		public delegate void HandleSelected (Vector3 vertice_position);

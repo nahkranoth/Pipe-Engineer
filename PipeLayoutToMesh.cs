@@ -137,7 +137,7 @@ namespace nl.elleniaw.pipeBuilder{
 			triangles = new List<int> ();
 
 			for (int i = 0; i < pipe_layout.amount_of_ring_vertices; i++) {
-				triangles.Add ();
+//				triangles.Add ();
 			}
 
 //			for(var j=1;j<pipe_layout.amount_of_rings;j++){

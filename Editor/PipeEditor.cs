@@ -156,8 +156,8 @@ namespace nl.elleniaw.pipeBuilder{
 			Rect size = new Rect (0, 0, 310, 150);
 
 			GUI.BeginGroup (new Rect (0, 0, size.width, size.height));
-			GUI.color = getColor("#ABA688");
-			GUI.Box (new Rect (4, 4, 300, 128), "Pipe Machine");
+			GUI.color = getColor("#FFFFFF");
+			GUI.Box (new Rect (4, 4, 300, 128), pipeBuildTarget.GUI_image);
 			GUI.color = getColor("#DAEFF6F");
 			buildPositionTextFields ();
 			buildRotationTextFields ();
