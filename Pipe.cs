@@ -3,12 +3,11 @@ using UnityEngine;
 
 
 /*TODO:
+ * -> Redo Triangles and extrusion (look at Gamasutra examples)
+ * -> Mesh texture bug (UV's?)
 	-> Remove last extrusion
 
-	-> Mesh texture bug (UV's?)
-	-> Bolts (Add Objects?)
-	-> Handle instead of Shift to select, check closes handles?
-	-> PBS materials
+	
 */
 using System.Collections.Generic;
 

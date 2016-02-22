@@ -37,6 +37,8 @@ public class pipeBuilder : MonoBehaviour {
 	public float handleDistance = 0;
 
 	public void Update() {
+
+		Debug.Log ("Update?");
 		float slide_distance = handleDistance/(amount_of_rings-1);
 
 		mesh = new Mesh ();
@@ -65,7 +67,6 @@ public class pipeBuilder : MonoBehaviour {
 		}
 
 		buildTriangles ();
-		buildUVS ();
 		buildNormals ();
 		DrawMesh ();
 	}
@@ -164,20 +165,6 @@ public class pipeBuilder : MonoBehaviour {
 
 		triangles [triangle + 4] = opposideVert + 1;
 
-	}
-
-	void buildUVS() {
-		for (int i = 0; i < vertices.Length; i++) {
-			if (i % 4 == 0) {
-				uvs [i] = Vector2.zero;
-			} else if (i % 4 == 1) {
-				uvs [i] = Vector2.right;
-			} else if (i % 4 == 2) {
-				uvs [i] = Vector2.up;
-			} else {
-				uvs[i] = Vector2.one;
-			}
-		}
 	}
 
 	void buildNormals(){

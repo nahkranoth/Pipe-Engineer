@@ -92,7 +92,7 @@ namespace nl.elleniaw.pipeBuilder{
 
 		void UpdateHandlePosition(){
 			pipeBuildTarget = (Pipe)target;
-			if (pipeBuildTarget != null && pipeBuildTarget != null) {
+			if (pipeBuildTarget != null && pipeBuildTarget != null && pipeBuildTarget.pipe_manager != null) {
 				pipeBuildTarget.handle_position = pipeBuildTarget.pipe_manager.pipe_layout.heading_pos;
 				pipeBuildTarget.handle_rotation = pipeBuildTarget.pipe_manager.pipe_layout.heading_deg;
 			}

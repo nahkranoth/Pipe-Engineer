@@ -30,7 +30,6 @@ namespace nl.elleniaw.pipeBuilder{
 				vertices = new List<Vector3> ();
 			}
 			triangles = new List<int>();
-
 			for (int i = 0; i < pipe_layout.amount_of_rings; i++) {
 				if (doubledVertices) {
 					buildRingWithPhong (i);
@@ -135,20 +134,28 @@ namespace nl.elleniaw.pipeBuilder{
 		}
 
 		void buildTriangles(){
-			for(var j=1;j<pipe_layout.amount_of_rings;j++){
-				for(var i=1;i<=pipe_layout.amount_of_ring_vertices;i++){
-					var index = i + ((j-1)*pipe_layout.amount_of_ring_vertices);
-					if (doubledVertices) {
-						buildQuadWithPhong ( index, j);
-					} else {
-						buildQuadNoPhong ( index, j);
-					}
+			triangles = new List<int> ();
 
-				}
+			for (int i = 0; i < pipe_layout.amount_of_ring_vertices; i++) {
+				triangles.Add ();
 			}
+
+//			for(var j=1;j<pipe_layout.amount_of_rings;j++){
+//				for(var i=1;i<=pipe_layout.amount_of_ring_vertices;i++){
+//					var index = i + ((j-1)*pipe_layout.amount_of_ring_vertices);
+//					if (doubledVertices) {
+//						buildQuadWithPhong ( index, j);
+//					} else {
+//						buildQuadNoPhong ( index, j);
+//					}
+//
+//				}
+//			}
+
 		}
 
 		void buildQuadWithPhong(int vertice, int ring){
+			triangles = new List<int> ();
 			var triangle = ((vertice - 1) * 6) + 1;
 			var baseVert = vertice - 1;
 

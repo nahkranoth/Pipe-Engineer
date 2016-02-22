@@ -23,9 +23,6 @@ namespace nl.elleniaw.pipeBuilder{
 		{
 			parent = _parent;
 			AddRing (new Vector3 (0, 0, 0f), new Vector3 (0, 0, 0), 0.2f);
-			AddRing (new Vector3 (0, 0, 0.2f), new Vector3 (0, 0, 0), 0.2f);
-			AddRing (new Vector3 (0, 0, 0.2f), new Vector3 (0, 0, 0), 0.1f);
-			AddRing (new Vector3 (0, 0, 1.0f), new Vector3 (0, 0, 0), 0.1f);
 		}
 
 		public void ExtrudeRing(float offset, Vector3 rotation, float diameter){
@@ -62,7 +59,6 @@ namespace nl.elleniaw.pipeBuilder{
 		}
 
 		public void AddRing(float offset, Vector3 rotation, float diameter){
-			
 			Vector3 addition = new Vector3 (0,0,offset);
 
 			heading_deg += rotation;
@@ -72,6 +68,7 @@ namespace nl.elleniaw.pipeBuilder{
 			ring_rotation.Add (Quaternion.Euler(heading_deg));
 			ring_diameters.Add (diameter);
 			amount_of_rings = ring_origins.Count;
+			Debug.Log(amount_of_rings);
 		}
 
 		public void AddRing(Vector3 position, Vector3 euler_angle, float diameter){
@@ -79,9 +76,9 @@ namespace nl.elleniaw.pipeBuilder{
 			ring_rotation.Add (Quaternion.Euler(euler_angle));
 			ring_diameters.Add (diameter);
 			amount_of_rings = ring_origins.Count;
+
 			heading_pos = position;
 		}
-
 
 		private void Reset(){
 			ring_origins.Clear ();

@@ -40,6 +40,7 @@ namespace nl.elleniaw.pipeBuilder{
 		}
 
 		public void ExtrudeRing(float offset, Vector3 rotation, float diameter){
+			
 			pipe_layout.AddRing (offset, rotation, diameter);
 			pipe_layout_to_mesh.ExtrudeRing (pipe_layout);
 			UpdateLayout ();
