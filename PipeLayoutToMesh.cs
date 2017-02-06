@@ -136,68 +136,29 @@ namespace nl.elleniaw.pipeBuilder{
 		void buildTriangles(){
 			triangles = new List<int> ();
 
-			for (int i = 0; i < pipe_layout.amount_of_ring_vertices; i++) {
-//				triangles.Add ();
+			for (int i = 0; i < pipe_layout.amount_of_rings-1; i++) {
+				int indexOfFirstRing = i;
+				int indexOfSecondRing = i + 1;
+				for (int j = 0; j < pipe_layout.amount_of_ring_vertices; j++) {
+					BuildTriangleFromTheTop (j, indexOfFirstRing, indexOfSecondRing);
+					BuildTriangleFromTheBottom (j, indexOfSecondRing, indexOfFirstRing);
+				}
 			}
-
-//			for(var j=1;j<pipe_layout.amount_of_rings;j++){
-//				for(var i=1;i<=pipe_layout.amount_of_ring_vertices;i++){
-//					var index = i + ((j-1)*pipe_layout.amount_of_ring_vertices);
-//					if (doubledVertices) {
-//						buildQuadWithPhong ( index, j);
-//					} else {
-//						buildQuadNoPhong ( index, j);
-//					}
-//
-//				}
-//			}
-
 		}
 
-		void buildQuadWithPhong(int vertice, int ring){
-			triangles = new List<int> ();
-			var triangle = ((vertice - 1) * 6) + 1;
-			var baseVert = vertice - 1;
-
-			int baseVert2 = baseVert;
-			if(baseVert + 1 == (pipe_layout.amount_of_ring_vertices * ring)){
-				baseVert2 = (pipe_layout.amount_of_ring_vertices * ring) - (pipe_layout.amount_of_ring_vertices + 1);
-			}
-
-			triangles.Insert (triangle - 1, baseVert);
-			triangles.Insert (triangle, baseVert + pipe_layout.amount_of_ring_vertices);
-			triangles.Insert (triangle + 1, baseVert2 + 1);
-			triangles.Insert (triangle + 2, baseVert2 + 1);
-			triangles.Insert (triangle + 3, baseVert + pipe_layout.amount_of_ring_vertices);
-			triangles.Insert (triangle + 4,  baseVert2 + pipe_layout.amount_of_ring_vertices + 1);
-
+		void BuildTriangleFromTheBottom(int indexBottom, int currentRingIndex, int previousRingIndex){
+			triangles.Add (indexBottom + pipe_layout.amount_of_ring_vertices * currentRingIndex);
+			int next = (indexBottom + 1)%pipe_layout.amount_of_ring_vertices;
+			triangles.Add (next + pipe_layout.amount_of_ring_vertices * currentRingIndex);
+			triangles.Add (next + pipe_layout.amount_of_ring_vertices * previousRingIndex);
 		}
 
-		void buildQuadNoPhong(int vertice, int ring){
-			var triangle = (vertice * 6) - 5;
-			var baseVert = vertice + (vertice - 1);
-			var faces = (pipe_layout.amount_of_ring_vertices * 2);
-			int baseVert2 = baseVert;
-			if(baseVert + 1 == (faces * ring)){
-				baseVert2 = (faces * ring) - (faces + 1);
-			}
-
-			var opposideVert = baseVert + (pipe_layout.amount_of_ring_vertices * 2);
-
-			triangles.Insert (triangle - 1, baseVert);
-			triangles.Insert (triangle, opposideVert);
-			triangles.Insert (triangle + 1, baseVert2 + 1);
-			triangles.Insert (triangle + 2, baseVert2 + 1);
-			triangles.Insert (triangle + 3, opposideVert);
-
-			if(opposideVert + 1 == (faces * ring) + faces){
-				opposideVert = (faces * ring) - 1;
-			}
-
-			triangles.Insert (triangle + 4, opposideVert + 1);
-
+		void BuildTriangleFromTheTop(int indexTop, int currentRingIndex, int previousRingIndex){
+			triangles.Add (indexTop + currentRingIndex*pipe_layout.amount_of_ring_vertices);
+			triangles.Add (indexTop + pipe_layout.amount_of_ring_vertices * previousRingIndex);
+			int next = (indexTop + 1)%pipe_layout.amount_of_ring_vertices;
+			triangles.Add (next + pipe_layout.amount_of_ring_vertices * currentRingIndex);
 		}
-
 	}
 }
 
