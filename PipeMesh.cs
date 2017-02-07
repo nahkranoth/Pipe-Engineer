@@ -40,9 +40,9 @@ namespace nl.elleniaw.pipeBuilder{
 				if (i % 4 == 0) {
 					uvs.Insert(i ,Vector2.zero);
 				} else if (i % 4 == 1) {
-					uvs.Insert(i ,Vector2.right);
-				} else if (i % 4 == 2) {
 					uvs.Insert(i ,Vector2.up);
+				} else if (i % 4 == 2) {
+					uvs.Insert(i ,Vector2.right);
 				} else {
 					uvs.Insert(i ,Vector2.one);
 				}

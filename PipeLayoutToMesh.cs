@@ -37,8 +37,8 @@ namespace nl.elleniaw.pipeBuilder{
 			if (doubledVertices) {
 				buildTrianglesWithPhong ();
 			} else {
-				//buildTriangles ();
-				buildTriangles2 ();
+				buildTriangles ();
+				//buildTriangles2 ();
 			}
 		}
 
@@ -48,8 +48,8 @@ namespace nl.elleniaw.pipeBuilder{
 				buildTrianglesWithPhong ();
 			} else {
 				buildRing (pipe_layout.amount_of_rings - 1);
-				//buildTriangles ();
-				buildTriangles2 ();
+				buildTriangles ();
+				//buildTriangles2 ();
 			}
 		}
 
