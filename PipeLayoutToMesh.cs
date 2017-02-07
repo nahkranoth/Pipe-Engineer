@@ -24,11 +24,7 @@ namespace nl.elleniaw.pipeBuilder{
 		}
 
 		private void Initiate(){
-			if (doubledVertices) {
-				vertices = new List<Vector3> ();
-			} else {
-				vertices = new List<Vector3> ();
-			}
+			vertices = new List<Vector3> ();
 			triangles = new List<int>();
 			for (int i = 0; i < pipe_layout.amount_of_rings; i++) {
 				if (doubledVertices) {
@@ -38,14 +34,23 @@ namespace nl.elleniaw.pipeBuilder{
 				}
 			}
 			selected_vertices = Enumerable.Repeat(Vector3.zero, vertices.Count).ToList();
-			buildTriangles ();
+			if (doubledVertices) {
+				buildTrianglesWithPhong ();
+			} else {
+				//buildTriangles ();
+				buildTriangles2 ();
+			}
 		}
 
 		public void ExtrudeRing(PipeLayout pipe_layout){
 			if (doubledVertices) {
 				buildRingWithPhong (pipe_layout.amount_of_rings - 1);
+				buildTrianglesWithPhong ();
+			} else {
+				buildRing (pipe_layout.amount_of_rings - 1);
+				//buildTriangles ();
+				buildTriangles2 ();
 			}
-			buildTriangles ();
 		}
 
 		public void OnMoveHandle(Vector3 delta_pos, Pipe.HandleSelected handleCallback){
@@ -135,28 +140,92 @@ namespace nl.elleniaw.pipeBuilder{
 
 		void buildTriangles(){
 			triangles = new List<int> ();
+			int indexOfFirstRing;
+			int indexOfSecondRing;
+			for (int i = 0; i < pipe_layout.amount_of_rings-1; i++) {
+				indexOfFirstRing = i * 2;
+				indexOfSecondRing = i * 2 + 2;
+				for (int j = 0; j < 2 * pipe_layout.amount_of_ring_vertices; j += 2) {
+					//special biuld triangle from the top
+					triangles.Add (j + indexOfFirstRing * pipe_layout.amount_of_ring_vertices);
+					triangles.Add (j + pipe_layout.amount_of_ring_vertices * indexOfSecondRing);
+					int next = (j + 3) % (pipe_layout.amount_of_ring_vertices * 2);
+					triangles.Add (next + pipe_layout.amount_of_ring_vertices * indexOfFirstRing);
+					//special build triangle from the bottom
+					next = (j + 3) % (pipe_layout.amount_of_ring_vertices * 2);
+					triangles.Add (next + pipe_layout.amount_of_ring_vertices * indexOfSecondRing);
+					triangles.Add (next + pipe_layout.amount_of_ring_vertices * indexOfFirstRing);
+					triangles.Add (j + pipe_layout.amount_of_ring_vertices * indexOfSecondRing);
+				}
+			}
+		}
+
+		//another version of building triangles without phong, which would lead to stripes instead of
+		//cloud-like mess on the texture for everything but the last face
+		void buildTriangles2(){
+			triangles = new List<int> ();
+			int indexOfFirstRing;
+			int indexOfSecondRing;
+			bool sw = true;
+			for (int i = 0; i < pipe_layout.amount_of_rings - 1; i++) {
+				indexOfFirstRing = i * 2;
+				indexOfSecondRing = i * 2 + 2;
+				for (int j = 0; j < 2 * pipe_layout.amount_of_ring_vertices - 2; j += 2) {
+					if (sw) {
+						BuildTriangleFromTheTop (j, indexOfFirstRing, indexOfSecondRing, 2);
+						BuildTriangleFromTheBottom (j, indexOfSecondRing, indexOfFirstRing, 2);
+					} else {
+						BuildTriangleFromTheTop (j + 1, indexOfFirstRing, indexOfSecondRing, 2);
+						BuildTriangleFromTheBottom (j + 1, indexOfSecondRing, indexOfFirstRing, 2);
+					}
+					sw = !sw;
+				}
+				//if the number of vertices is even, just proceed with the last one
+				if (pipe_layout.amount_of_ring_vertices % 2 == 0) {
+					BuildTriangleFromTheTop (2 * pipe_layout.amount_of_ring_vertices - 1, indexOfFirstRing, indexOfSecondRing, 2);
+					BuildTriangleFromTheBottom (2 * pipe_layout.amount_of_ring_vertices - 1, indexOfSecondRing, indexOfFirstRing, 2);
+				}
+				//if the number of vertices is odd, we need to consider a special case- this creates a cloud-like texture on that face
+				else {
+					int j = 2 * pipe_layout.amount_of_ring_vertices - 2;
+					//special biuld triangle from the top
+					triangles.Add (j + indexOfFirstRing*pipe_layout.amount_of_ring_vertices);
+					triangles.Add (j + pipe_layout.amount_of_ring_vertices * indexOfSecondRing);
+					int next = (j + 3)%(pipe_layout.amount_of_ring_vertices*2);
+					triangles.Add (next + pipe_layout.amount_of_ring_vertices * indexOfFirstRing);
+					//special build triangle from the bottom
+					next = (j + 3)%(pipe_layout.amount_of_ring_vertices*2);
+					triangles.Add (next + pipe_layout.amount_of_ring_vertices * indexOfSecondRing);
+					triangles.Add (next + pipe_layout.amount_of_ring_vertices * indexOfFirstRing);
+					triangles.Add (j + pipe_layout.amount_of_ring_vertices * indexOfSecondRing);
+				}
+			}
+		}
+
+		void buildTrianglesWithPhong(){
+			triangles = new List<int> ();
 
 			for (int i = 0; i < pipe_layout.amount_of_rings-1; i++) {
 				int indexOfFirstRing = i;
 				int indexOfSecondRing = i + 1;
 				for (int j = 0; j < pipe_layout.amount_of_ring_vertices; j++) {
-					BuildTriangleFromTheTop (j, indexOfFirstRing, indexOfSecondRing);
-					BuildTriangleFromTheBottom (j, indexOfSecondRing, indexOfFirstRing);
+					BuildTriangleFromTheTop (j, indexOfFirstRing, indexOfSecondRing,1);
+					BuildTriangleFromTheBottom (j, indexOfSecondRing, indexOfFirstRing,1);
 				}
 			}
 		}
 
-		void BuildTriangleFromTheBottom(int indexBottom, int currentRingIndex, int previousRingIndex){
-			triangles.Add (indexBottom + pipe_layout.amount_of_ring_vertices * currentRingIndex);
-			int next = (indexBottom + 1)%pipe_layout.amount_of_ring_vertices;
+		void BuildTriangleFromTheBottom(int indexBottom, int currentRingIndex, int previousRingIndex, int step){
+			int next = (indexBottom + step)%(pipe_layout.amount_of_ring_vertices*step);
 			triangles.Add (next + pipe_layout.amount_of_ring_vertices * currentRingIndex);
 			triangles.Add (next + pipe_layout.amount_of_ring_vertices * previousRingIndex);
+			triangles.Add (indexBottom + pipe_layout.amount_of_ring_vertices * currentRingIndex);
 		}
 
-		void BuildTriangleFromTheTop(int indexTop, int currentRingIndex, int previousRingIndex){
+		void BuildTriangleFromTheTop(int indexTop, int currentRingIndex, int previousRingIndex, int step){
 			triangles.Add (indexTop + currentRingIndex*pipe_layout.amount_of_ring_vertices);
 			triangles.Add (indexTop + pipe_layout.amount_of_ring_vertices * previousRingIndex);
-			int next = (indexTop + 1)%pipe_layout.amount_of_ring_vertices;
+			int next = (indexTop + step)%(pipe_layout.amount_of_ring_vertices*step);
 			triangles.Add (next + pipe_layout.amount_of_ring_vertices * currentRingIndex);
 		}
 	}
