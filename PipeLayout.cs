@@ -11,7 +11,7 @@ namespace nl.elleniaw.pipeBuilder{
 
 		public int amount_of_rings = 2;
 		public float diameter = 0.1f;
-		public int amount_of_ring_vertices = 9;
+		public int amount_of_ring_vertices = 10;
 
 		public Vector3 heading_deg = Vector3.zero;
 		public Vector3 heading_pos = Vector3.zero;
@@ -68,7 +68,6 @@ namespace nl.elleniaw.pipeBuilder{
 			ring_rotation.Add (Quaternion.Euler(heading_deg));
 			ring_diameters.Add (diameter);
 			amount_of_rings = ring_origins.Count;
-			Debug.Log(amount_of_rings);
 		}
 
 		public void AddRing(Vector3 position, Vector3 euler_angle, float diameter){

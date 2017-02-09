@@ -7,8 +7,8 @@ namespace nl.elleniaw.pipeBuilder{
 	public class PipeLayoutToMesh
 	{
 
-		private bool doubledVertices;
-		private PipeLayout pipe_layout;
+		public bool doubledVertices;
+		public PipeLayout pipe_layout;
 
 		public List<Vector3> selected_vertices;
 		public List<Vector3> vertices;
@@ -96,11 +96,22 @@ namespace nl.elleniaw.pipeBuilder{
 		}
 
 		private void buildRingWithPhong(int ring_index){
-			float angle = 360.0f/pipe_layout.amount_of_ring_vertices;
+			float angle = 360.0f/(pipe_layout.amount_of_ring_vertices-1);
+			int slice_root = ring_index * pipe_layout.amount_of_ring_vertices;
+			Vector3 vertice_position = new Vector3();
+			vertice_position = new Vector3 ( 
+				Mathf.Sin(0) * pipe_layout.ring_diameters[ring_index],
+				Mathf.Cos (0) * pipe_layout.ring_diameters[ring_index],
+				0
+			);
+			vertice_position = pipe_layout.ring_rotation [ring_index] * vertice_position;
+			vertice_position += pipe_layout.ring_origins[ring_index];
 
-			for (var i = 0; i < pipe_layout.amount_of_ring_vertices; i++) {
-				var rad = (angle * i) * Mathf.Deg2Rad;
-				Vector3 vertice_position = new Vector3();
+			setVertice(slice_root, vertice_position);
+
+			for (int v = 0, i = 1; v < pipe_layout.amount_of_ring_vertices-1; v++, i++) {
+				var rad = (angle * v) * Mathf.Deg2Rad;
+				vertice_position = new Vector3();
 				vertice_position = new Vector3 ( 
 					Mathf.Sin(rad) * pipe_layout.ring_diameters[ring_index],
 					Mathf.Cos (rad) * pipe_layout.ring_diameters[ring_index],
@@ -109,17 +120,29 @@ namespace nl.elleniaw.pipeBuilder{
 				vertice_position = pipe_layout.ring_rotation [ring_index] * vertice_position;
 				vertice_position += pipe_layout.ring_origins[ring_index];
 
-				int slice_root = ring_index * pipe_layout.amount_of_ring_vertices;
 				setVertice(i + slice_root, vertice_position);
 			}
 		}
 
 		private void buildRing(int ring_index){
-			float angle = 360.0f/pipe_layout.amount_of_ring_vertices;
+			float angle = 360.0f/(pipe_layout.amount_of_ring_vertices-1);
+			//we duplicate the first vertex, needed for the texture to wrap around nicely.
+			Vector3 vertice_position = new Vector3();
+			vertice_position = new Vector3 ( 
+				Mathf.Sin(0) * pipe_layout.ring_diameters[ring_index],
+				Mathf.Cos (0) * pipe_layout.ring_diameters[ring_index],
+				0
+			);
+			vertice_position = pipe_layout.ring_rotation [ring_index] * vertice_position;
+			vertice_position += pipe_layout.ring_origins[ring_index];
 
-			for (int v = 0, i = 0; v < pipe_layout.amount_of_ring_vertices; v++, i += 2) {
+			int slice_root = (ring_index*2) * pipe_layout.amount_of_ring_vertices;
+			setVertice(slice_root, vertice_position);
+			setVertice(slice_root + 1, vertice_position);
+
+			for (int v = 0, i = 2; v < pipe_layout.amount_of_ring_vertices-1; v++, i += 2) {
 				var rad = (angle * v) * Mathf.Deg2Rad;
-				Vector3 vertice_position = new Vector3();
+				vertice_position = new Vector3();
 				vertice_position = new Vector3 ( 
 					Mathf.Sin(rad) * pipe_layout.ring_diameters[ring_index],
 					Mathf.Cos (rad) * pipe_layout.ring_diameters[ring_index],
@@ -127,8 +150,6 @@ namespace nl.elleniaw.pipeBuilder{
 				);
 				vertice_position = pipe_layout.ring_rotation [ring_index] * vertice_position;
 				vertice_position += pipe_layout.ring_origins[ring_index];
-
-				int slice_root = (ring_index*2) * pipe_layout.amount_of_ring_vertices;//slice * 2 because we doubled the vertices
 				setVertice(i + slice_root, vertice_position);
 				setVertice(i + slice_root + 1, vertice_position);// we double the vertices
 			}
@@ -145,7 +166,7 @@ namespace nl.elleniaw.pipeBuilder{
 			for (int i = 0; i < pipe_layout.amount_of_rings-1; i++) {
 				indexOfFirstRing = i * 2;
 				indexOfSecondRing = i * 2 + 2;
-				for (int j = 0; j < 2 * pipe_layout.amount_of_ring_vertices; j += 2) {
+				for (int j = 2; j < 2 * pipe_layout.amount_of_ring_vertices; j += 2) {
 					//special biuld triangle from the top
 					triangles.Add (j + indexOfFirstRing * pipe_layout.amount_of_ring_vertices);
 					triangles.Add (j + pipe_layout.amount_of_ring_vertices * indexOfSecondRing);
@@ -170,7 +191,7 @@ namespace nl.elleniaw.pipeBuilder{
 			for (int i = 0; i < pipe_layout.amount_of_rings - 1; i++) {
 				indexOfFirstRing = i * 2;
 				indexOfSecondRing = i * 2 + 2;
-				for (int j = 0; j < 2 * pipe_layout.amount_of_ring_vertices - 2; j += 2) {
+				for (int j = 2; j < 2 * pipe_layout.amount_of_ring_vertices - 2; j += 2) {
 					if (sw) {
 						BuildTriangleFromTheTop (j, indexOfFirstRing, indexOfSecondRing, 2);
 						BuildTriangleFromTheBottom (j, indexOfSecondRing, indexOfFirstRing, 2);
@@ -208,7 +229,7 @@ namespace nl.elleniaw.pipeBuilder{
 			for (int i = 0; i < pipe_layout.amount_of_rings-1; i++) {
 				int indexOfFirstRing = i;
 				int indexOfSecondRing = i + 1;
-				for (int j = 0; j < pipe_layout.amount_of_ring_vertices; j++) {
+				for (int j = 1; j < pipe_layout.amount_of_ring_vertices; j++) {
 					BuildTriangleFromTheTop (j, indexOfFirstRing, indexOfSecondRing,1);
 					BuildTriangleFromTheBottom (j, indexOfSecondRing, indexOfFirstRing,1);
 				}

@@ -1,60 +1,60 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace nl.elleniaw.pipeBuilder{
 	
 	public class PipeMesh {
 
-		public List<Vector3> vertices;
+		private PipeLayoutToMesh pipeLayoutToMesh;
 		public List<Vector2> uvs;
 		public List<Vector3> normals;
-		public List<int> triangles;
 
 		public Mesh mesh;
 
-		public PipeMesh(List<Vector3> _vertices, List<int> _triangles){
-			vertices = _vertices;
-			triangles = _triangles;
+		public PipeMesh(PipeLayoutToMesh pipeLayoutToMesh){
+			this.pipeLayoutToMesh = pipeLayoutToMesh;
 			uvs = new List<Vector2> ();
 			normals = new List<Vector3> ();
-
 			allUVs ();
-			allNormals ();
 			BuildMesh ();
 		}
 
 		private void BuildMesh(){
 			mesh = new Mesh ();
-			mesh.vertices = vertices.ToArray ();
-			mesh.normals = normals.ToArray ();
+			mesh.vertices = pipeLayoutToMesh.vertices.ToArray();
 			mesh.uv = uvs.ToArray ();
-			mesh.triangles = triangles.ToArray();
+			mesh.triangles = pipeLayoutToMesh.triangles.ToArray();
 			mesh.RecalculateNormals();
-
+		    var norms = mesh.normals.ToList ();
+			for (int i = 0; i < mesh.normals.Length; i+=pipeLayoutToMesh.pipe_layout.amount_of_ring_vertices) {
+				var n = (mesh.normals [i] + mesh.normals [i+1]) * 0.5f;
+				norms [i] = n;
+				norms [i+1] = n;
+			}
+			mesh.normals = norms.ToArray ();
 		}
 
 		private void allUVs(){
 			//for every vertice build uv position
-			for (int i = 0; i < vertices.Count; i++) {
-				if (i % 4 == 0) {
-					uvs.Insert(i ,Vector2.zero);
-				} else if (i % 4 == 1) {
-					uvs.Insert(i ,Vector2.up);
-				} else if (i % 4 == 2) {
-					uvs.Insert(i ,Vector2.right);
-				} else {
-					uvs.Insert(i ,Vector2.one);
+			float y = 0;
+			int i = 0;
+			int repetitionsOfRing = 2;
+			if (pipeLayoutToMesh.doubledVertices) {
+				repetitionsOfRing = 1;
+			}
+			while(i<pipeLayoutToMesh.vertices.Count) {
+				for (int k = 0; k < repetitionsOfRing; k++) {
+					uvs.Insert (i, new Vector2 (1.0f, y));
+					i++;
+					for (float x = 0; x < pipeLayoutToMesh.pipe_layout.amount_of_ring_vertices - 1; x++) {
+						uvs.Insert (i, new Vector2 (x / (pipeLayoutToMesh.pipe_layout.amount_of_ring_vertices - 1), y));
+						i++;
+					}
 				}
+				y = (y + 1) % 2;
 			}
 		}
-
-		private void allNormals(){
-			//for every vertice build normal vector
-			for (int i = 0; i < vertices.Count; i++) {
-				normals.Insert(i, new Vector3 (0,0,0));
-			}
-		}
-
 	}
 }

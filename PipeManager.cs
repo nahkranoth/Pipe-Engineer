@@ -55,7 +55,7 @@ namespace nl.elleniaw.pipeBuilder{
 		public void OnMoveHandle(Vector3 delta_pos, Pipe.HandleSelected handleCallback){
 			pipe_gizmos.OnMoveHandle (delta_pos);
 			pipe_layout_to_mesh.OnMoveHandle (delta_pos, handleCallback);
-			UpdateLayout ();
+			//UpdateLayout ();
 		}
 
 		public PipeManager(Pipe.MeshCallback _meshCallback){
@@ -91,7 +91,7 @@ namespace nl.elleniaw.pipeBuilder{
 			
 		private void CreateMesh(){
 			if (drawMesh) {
-				pipe_mesh = new PipeMesh (pipe_layout_to_mesh.vertices, pipe_layout_to_mesh.triangles);
+				pipe_mesh = new PipeMesh (pipe_layout_to_mesh);
 			}
 		}
 
